@@ -62,8 +62,14 @@ def _preprocess_data(data):
     
 
     feature_vector_df = feature_vector_df[(feature_vector_df['Commodities'] == 'APPLE GOLDEN DELICIOUS')]
-    predict_vector = feature_vector_df[['Total_Qty_Sold','Stock_On_Hand']]
-                                
+
+    feature_vector_df.columns = map(str.lower, feature_vector_df.columns)
+
+    feature_vector_df["date"] = pd.to_datetime(feature_vector_df["date"],format="%Y.%m.%d")
+    predict_vector = feature_vector_df[['low_price','high_price']]   
+    predict_vector['month'] = feature_vector_df['date'].dt.month
+    predict_vector['price_kg'] = feature_vector_df['sales_total'] * feature_vector_df['weight_kg'] / feature_vector_df['total_qty_sold']  
+                         
     # ------------------------------------------------------------------------
 
     return predict_vector
