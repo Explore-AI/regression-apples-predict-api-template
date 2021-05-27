@@ -61,8 +61,20 @@ def _preprocess_data(data):
     # ----------- Replace this code with your own preprocessing steps --------
     
 
-    feature_vector_df = feature_vector_df[(feature_vector_df['Commodities'] == 'APPLE GOLDEN DELICIOUS')]
-    predict_vector = feature_vector_df[['Total_Qty_Sold','Stock_On_Hand']]
+    feature_vector_df = feature_vector_df[(feature_vector_df['Commodities'] == 'APPLE GOLDEN DELICIOUS')].drop(columns='Commodities')
+
+
+
+    feature_vector_df['Date'] = pd.to_datetime(feature_vector_df['Date'])
+    feature_vector_df['Day'] = feature_vector_df['Date'].dt.day
+    feature_vector_df['Month'] = feature_vector_df['Date'].dt.month
+    feature_vector_df.drop(['Date'], inplace = True, axis = 1)
+
+    feature_vector_df.columns = ['province', 'container', 'size_grade', 'weight_kg', 'low_price', 
+                 'high_price', 'sales_total', 'total_qty_sold','total_kg_sold', 
+                 'stock_on_hand', 'avg_price_per_kg', 'day', 'month']
+
+    predict_vector = pd.get_dummies(feature_vector_df,drop_first=False)
                                 
     # ------------------------------------------------------------------------
 
